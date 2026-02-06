@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		6BF908062F36442E0031D012 /* KittyKatNo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = KittyKatNo.app; path = "/Users/juliashen/Desktop/KittyKatNo/KittyKatNo/build/Debug-iphoneos/KittyKatNo.app"; sourceTree = "<absolute>"; };
+		6B6767922F36711F0028FADD /* KittyKatNo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KittyKatNo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,6 +33,7 @@
 			isa = PBXGroup;
 			children = (
 				6BF908082F36442E0031D012 /* KittyKatNo */,
+				6B6767922F36711F0028FADD /* KittyKatNo.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,7 +59,7 @@
 			packageProductDependencies = (
 			);
 			productName = KittyKatNo;
-			productReference = 6BF908062F36442E0031D012 /* KittyKatNo.app */;
+			productReference = 6B6767922F36711F0028FADD /* KittyKatNo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
