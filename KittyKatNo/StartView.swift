@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct StartView: View {
+    @EnvironmentObject var game: GameService
     @State private var gameType: GameType = .undetermined
     @State private var yourName: String = ""
     @State private var opponentName: String = ""
@@ -48,6 +49,7 @@ struct StartView: View {
                 
                 if gameType != .peer {
                     Button("Start Game") {
+                        game.setupGame(gameType: gameType, player1Name: yourName, player2Name: opponentName)
                         focus = false
                         start.toggle()
                     }
@@ -76,4 +78,5 @@ struct StartView: View {
 
 #Preview {
     StartView()
+        .environmentObject(GameService())
 }
