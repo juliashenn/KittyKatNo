@@ -81,7 +81,7 @@ class GameService: ObservableObject {
     }
     
     func makeMove(at index: Int) {
-        if gameBoard[index].player != nil {
+        if gameBoard[index].player == nil {
             withAnimation {
                 updateMoves(index: index)
             }
