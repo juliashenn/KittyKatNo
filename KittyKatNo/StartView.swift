@@ -10,13 +10,21 @@ import SwiftUI
 struct StartView: View {
     @EnvironmentObject var game: GameService
     @State private var gameType: GameType = .undetermined
-    @State private var yourName: String = ""
+    @AppStorage("yourName") var yourName = ""
     @State private var opponentName: String = ""
     @FocusState private var focus: Bool
     @State private var start: Bool = false
+    @State private var changeName = false
+    @State private var newName = ""
+    init(yourName: String) {
+        self.yourName = yourName
+    }
     var body: some View {
         NavigationStack {
             VStack {
+                Text("Welcome \(yourName)!")
+                    .font(.system(size: 28))
+                    .padding()
                 Picker("Select Game", selection: $gameType) {
                     Text("Select Game Type").tag(GameType.undetermined)
                     Text("Two Players sharing this device").tag(GameType.single)
@@ -28,21 +36,13 @@ struct StartView: View {
                 Text(gameType.description)
                 
                 VStack {
-                    switch gameType {
-                    case .single:
+                    if gameType == .single {
                         VStack {
-                            TextField("Your Name", text: $yourName)
                             TextField("Opponent's Name", text: $opponentName)
                         }
-                    case .bot:
-                        TextField("Your Name", text: $yourName)
-                    case .peer:
-                        EmptyView()
-                    case .undetermined:
-                        EmptyView()
+                        .padding()
                     }
                 }
-                .padding()
                 .textFieldStyle(.roundedBorder)
                 .focused($focus)
                 .frame(width: 350)
@@ -53,13 +53,17 @@ struct StartView: View {
                         focus = false
                         start.toggle()
                     }
+                    .padding()
                     .buttonStyle(.borderedProminent)
                     .disabled(
                         gameType == .undetermined ||
-                        gameType == .single && (yourName.isEmpty || opponentName.isEmpty) ||
-                        gameType == .bot && yourName.isEmpty
+                        gameType == .single && opponentName.isEmpty
                     )
                     Image("LaunchScreen")
+                    Button("Change Name") {
+                        changeName.toggle()
+                    }
+                    .buttonStyle(.bordered)
                 }
                 Spacer()
                 //            Image(systemName: "globe")
@@ -72,11 +76,21 @@ struct StartView: View {
                 GameView()
             }
             .navigationTitle("Tic Tac Toe")
+            .alert("Change Name", isPresented: $changeName, actions: {
+                TextField("New Name", text: $newName)
+                Button("OK", role: .destructive) {
+                    yourName = newName
+                    exit(-1)
+                }
+                Button("Cancel", role: .cancel) {}
+            }, message: {
+                Text("Press OK to change name and restart the app")
+            })
         }
     }
 }
 
 #Preview {
-    StartView()
+    StartView(yourName: "You")
         .environmentObject(GameService())
 }
