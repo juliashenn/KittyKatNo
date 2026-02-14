@@ -148,7 +148,13 @@ extension MPConnectionManager: MCSessionDelegate {
             DispatchQueue.main.async {
                 switch gameMove.action {
                 case .start:
-                    break // will come back to later, when receiving start, will also get player name
+                    // other player accepted invitation
+                    guard let playerName = gameMove.playerName else {return}
+                    if self.game?.player1.name == playerName { // want to make this randomized later
+                        self.game?.player1.isCurrent = true
+                    } else {
+                        self.game?.player2.isCurrent = true
+                    }
                 case .end:
                     self.session.disconnect()
                     self.isAvailable = true
@@ -165,15 +171,15 @@ extension MPConnectionManager: MCSessionDelegate {
     
     // can leave other functions empty since im not passing any resources or input stream
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
-        <#code#>
+        
     }
     
     func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
-        <#code#>
+        
     }
     
     func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: (any Error)?) {
-        <#code#>
+        
     }
     
     

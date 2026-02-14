@@ -9,6 +9,9 @@ import SwiftUI
 
 struct StartView: View {
     @EnvironmentObject var game: GameService
+    
+    @StateObject var connectionManager: MPConnectionManager
+    
     @State private var gameType: GameType = .undetermined
     @AppStorage("yourName") var yourName = ""
     @State private var opponentName: String = ""
@@ -18,6 +21,7 @@ struct StartView: View {
     @State private var newName = ""
     init(yourName: String) {
         self.yourName = yourName
+        _connectionManager = StateObject(wrappedValue: MPConnectionManager(yourName: yourName)) // its a property wrapper, so need to use underscore to address it
     }
     var body: some View {
         NavigationStack {
@@ -36,11 +40,15 @@ struct StartView: View {
                 Text(gameType.description)
                 
                 VStack {
+                    // was switch case but half were empty views so didnt want it
                     if gameType == .single {
                         VStack {
                             TextField("Opponent's Name", text: $opponentName)
                         }
                         .padding()
+                    } else if gameType == .peer {
+                        MPPeerView(startGame: $start)
+                            .environmentObject(connectionManager)
                     }
                 }
                 .textFieldStyle(.roundedBorder)
@@ -60,6 +68,9 @@ struct StartView: View {
                         gameType == .single && opponentName.isEmpty
                     )
                     Image("LaunchScreen")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 200)
                     Button("Change Name") {
                         changeName.toggle()
                     }
@@ -74,6 +85,7 @@ struct StartView: View {
             .padding()
             .fullScreenCover(isPresented: $start) {
                 GameView()
+                    .environmentObject(connectionManager)
             }
             .navigationTitle("Tic Tac Toe")
             .alert("Change Name", isPresented: $changeName, actions: {

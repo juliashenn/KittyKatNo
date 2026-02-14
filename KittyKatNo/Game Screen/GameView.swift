@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import MultipeerConnectivity
 
 struct GameView: View {
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var connectionManager: MPConnectionManager
     @EnvironmentObject var game: GameService
     var body: some View {
         NavigationStack {
@@ -17,8 +19,13 @@ struct GameView: View {
                     Text("Select a player to start") // that $0 means both are false
                 }
                 HStack {
+                    // !!! want to make this randomized later
                     Button(game.player1.name) {
                         game.player1.isCurrent = true
+                        if game.gameType == .peer {
+                            let gameMove = MPGameMove(action: .start, playerName: game.player1.name, index: nil)
+                            connectionManager.send(gameMove: gameMove)
+                        }
                     }
                     .buttonStyle(PlayerButtonStyle(isCurrent: game.player1.isCurrent))
                     
@@ -28,6 +35,10 @@ struct GameView: View {
                             Task {
                                 await game.deviceMove()
                             }
+                        }
+                        if game.gameType == .peer {
+                            let gameMove = MPGameMove(action: .start, playerName: game.player2.name, index: nil)
+                            connectionManager.send(gameMove: gameMove)
                         }
                     }
                     .buttonStyle(PlayerButtonStyle(isCurrent: game.player2.isCurrent))
@@ -62,7 +73,8 @@ struct GameView: View {
                         }
                     }
                 }
-                .disabled(game.boardDisabled || !game.gameStarted)
+                .disabled(game.boardDisabled || !game.gameStarted ||
+                          (game.gameType == .peer && connectionManager.myPeerId.displayName != game.currentPlayer.name)) // cant place while its not my turn
                 
                 VStack {
                     if game.gameOver {
@@ -74,6 +86,10 @@ struct GameView: View {
                         }
                         Button("New Game") {
                             game.resetGame()
+                            if game.gameType == .peer {
+                                let gameMove = MPGameMove(action: .reset, playerName: nil, index: nil)
+                                connectionManager.send(gameMove: gameMove)
+                            }
                         }
                         .buttonStyle(.borderedProminent)
                     }
@@ -86,6 +102,10 @@ struct GameView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("End Game") {
                         dismiss()
+                        if game.gameType == .peer {
+                            let gameMove = MPGameMove(action: .end, playerName: nil, index: nil)
+                            connectionManager.send(gameMove: gameMove)
+                        }
                     }
                     .buttonStyle(.bordered)
                 }
@@ -93,6 +113,9 @@ struct GameView: View {
             .navigationTitle("Tic Tac Toe")
             .onAppear {
                 game.resetGame()
+                if game.gameType == .peer {
+                    connectionManager.setup(game: game)
+                }
             }
         }
     }
