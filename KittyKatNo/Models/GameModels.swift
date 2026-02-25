@@ -21,7 +21,7 @@ enum GameType {
 }
 
 enum GamePiece: String {
-    case x, o
+    case cat, fish
     var image: Image {
         Image(self.rawValue)
     }
@@ -29,7 +29,7 @@ enum GamePiece: String {
 
 
 struct Player {
-    let gamePiece: GamePiece
+    var gamePiece: GamePiece
     var name: String
     var moves: [Int] = []
     var isCurrent: Bool = false

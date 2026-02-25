@@ -14,11 +14,13 @@ struct GameSquare {
     
     var image: Image {
         if let player = player {
-            return player.gamePiece.image
+            return (player.gamePiece.image)
         } else {
             return Image("none")
         }
     }
+    
+    var enabled: Bool = false
     
     static var reset: [GameSquare] {
         var squares = [GameSquare]()

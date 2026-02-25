@@ -21,15 +21,19 @@ struct GameView: View {
                 HStack {
                     // !!! want to make this randomized later
                     Button(game.player1.name) {
+                        game.player1.gamePiece = .fish
+                        game.player2.gamePiece = .cat
                         game.player1.isCurrent = true
                         if game.gameType == .peer {
-                            let gameMove = MPGameMove(action: .start, playerName: game.player1.name, index: nil)
+                            let gameMove = MPGameMove(action: .start, playerName: game.player1.name, index: nil, removeInd: nil)
                             connectionManager.send(gameMove: gameMove)
                         }
                     }
                     .buttonStyle(PlayerButtonStyle(isCurrent: game.player1.isCurrent))
                     
                     Button(game.player2.name) {
+                        game.player2.gamePiece = .fish
+                        game.player1.gamePiece = .cat
                         game.player2.isCurrent = true
                         if game.gameType == .bot {
                             Task {
@@ -37,7 +41,7 @@ struct GameView: View {
                             }
                         }
                         if game.gameType == .peer {
-                            let gameMove = MPGameMove(action: .start, playerName: game.player2.name, index: nil)
+                            let gameMove = MPGameMove(action: .start, playerName: game.player2.name, index: nil, removeInd: nil)
                             connectionManager.send(gameMove: gameMove)
                         }
                     }
@@ -87,7 +91,7 @@ struct GameView: View {
                         Button("New Game") {
                             game.resetGame()
                             if game.gameType == .peer {
-                                let gameMove = MPGameMove(action: .reset, playerName: nil, index: nil)
+                                let gameMove = MPGameMove(action: .reset, playerName: nil, index: nil, removeInd: nil)
                                 connectionManager.send(gameMove: gameMove)
                             }
                         }
@@ -103,7 +107,7 @@ struct GameView: View {
                     Button("End Game") {
                         dismiss()
                         if game.gameType == .peer {
-                            let gameMove = MPGameMove(action: .end, playerName: nil, index: nil)
+                            let gameMove = MPGameMove(action: .end, playerName: nil, index: nil, removeInd: nil)
                             connectionManager.send(gameMove: gameMove)
                         }
                     }

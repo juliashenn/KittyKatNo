@@ -13,7 +13,8 @@ struct MPGameMove: Codable {
     }
     let action: Action
     let playerName: String?
-    let index: Int?
+    let index: Int? // where the players piece is placed
+    let removeInd: Int? // if its a cat eating as their move, remove the piece from here
     
     func data() -> Data? {
         try? JSONEncoder().encode(self)
